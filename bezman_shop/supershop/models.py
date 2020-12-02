@@ -32,6 +32,7 @@ class Product(models.Model):
     manufacturer = models.CharField(max_length=15)
 
 
+
     def __str__(self):
         return self.name+' '+self.product_model
 
