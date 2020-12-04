@@ -1,6 +1,6 @@
 <form action="" method="POST">
     {% csrf_token %}
-  {{ form }}
+  {{ form.as_p }}
     <input type="Submit" name="Submit">
 
 
