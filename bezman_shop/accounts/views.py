@@ -1,3 +1,4 @@
+from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.forms import UserCreationForm
 from django.shortcuts import render, redirect
 from .models import *
@@ -26,3 +27,17 @@ def createCustomer(request):
     return render(request, 'supershop/customer-create.html', context)
 
 
+def auth(request):
+    if request.method == 'POST':
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+        user = authenticate(request,username = username,password = password)
+        if user is not None:
+            login(request,user)
+            return redirect('products')
+    context = {}
+    return render(request,'supershop/login.html',context)
+
+def logout_page(request):
+    logout(request)
+    return redirect('login')
