@@ -1,3 +1,14 @@
+<nav>
+    Hey, {{ request.user }}
+<button><a href="{% url 'logout' %}">Logout</a> </button>
+</nav>
+<form action="" method="GET">
+    {{ filter.form }}
+
+    <input type="submit" name="Confirm">
+</form>
+
+
 <table>
     <tr>
         <td>Image</td>
@@ -8,6 +19,7 @@
         <td>Manufacturer</td>
         <td>Product Type</td>
         <td>Price</td>
+
 </tr>
 {% for product in products %}
 <tr>
