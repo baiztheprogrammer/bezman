@@ -1,10 +1,15 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render,redirect
 from .models import *
 from .forms import *
-# Create your views here.
+from django_filters import OrderingFilter
+from .filters import ProductFilter
+
+
 def productList(request):
     products = Product.objects.all()
-    context = {'products': products}
+    filter = ProductFilter(request.GET,queryset=products)
+    products = filter.qs
+    context = {'products': products,'filter':filter}
     return render(request,'supershop/products.html',context)
 
 def orderList(request):
@@ -19,7 +24,9 @@ def orderList(request):
 
 def orderCreate(request,product_id):
     product = Product.objects.get(id=product_id)
-    form = OrderForm(initial={'product':product})
+    customer = request.user
+    form = OrderForm(initial={'product':product,'customer':customer})
+
     if request.method == 'POST':
         form = OrderForm(request.POST)
         if form.is_valid():
