@@ -1,10 +1,12 @@
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.models import Group
 from django.shortcuts import render, redirect
 from .models import *
+from .admin_only import admin_only
 
 # Create your views here.
-
+@admin_only
 def customerList(request):
     customers = Customer.objects.all()
     context = {'customers':customers}
@@ -16,15 +18,19 @@ def getCustomer(request,customer_id):
     context = {'customer':customer,'orders':orders}
     return render(request,'supershop/get-customer.html',context)
 
-def createCustomer(request):
+def register(request):
     form = UserCreationForm()
     if request.method == 'POST':
         form = UserCreationForm(request.POST)
         if form.is_valid():
-            form.save()
-            return redirect('products')
+            user = form.save()
+            group = Group.objects.get(name='bezgirl')
+            user.groups.add(group)
+            Customer.objects.create(user=user,phone=1,full_name=user.username)
+            user.save()
+            return redirect('/')
     context = {'form': form}
-    return render(request, 'supershop/customer-create.html', context)
+    return render(request, 'supershop/register.html', context)
 
 
 def auth(request):
