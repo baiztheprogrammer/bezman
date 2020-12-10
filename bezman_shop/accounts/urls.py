@@ -8,7 +8,7 @@ from .views import *
 urlpatterns = [
     path('customers/',customerList,name='customer'),
     path('customers/<int:customer_id>/',getCustomer,name='customer'),
-    path('customercreate/',createCustomer,name='customercreate'),
+    path('register/',register,name='register'),
     path('login/',auth,name='login'),
     path('logout/',logout_page,name='logout')
 ]
