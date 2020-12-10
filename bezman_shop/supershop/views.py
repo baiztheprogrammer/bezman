@@ -1,8 +1,12 @@
+from django.contrib.auth.decorators import login_required
+from django.http import HttpResponse
 from django.shortcuts import render,redirect
 from .models import *
 from .forms import *
 from django_filters import OrderingFilter
 from .filters import ProductFilter
+from .decorators import allowed_rules
+
 
 
 def productList(request):
@@ -12,6 +16,7 @@ def productList(request):
     context = {'products': products,'filter':filter}
     return render(request,'supershop/products.html',context)
 
+@allowed_rules(allowed=['bezman'])
 def orderList(request):
     orders = Order.objects.all()
     orders_count = orders.count()
@@ -46,3 +51,8 @@ def orderUpdate(request,order_id):
             return redirect('orders')
     context = {'form':form}
     return render(request,'supershop/order-create.html',context)
+
+
+
+
+
