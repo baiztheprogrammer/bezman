@@ -28,10 +28,12 @@ def orderList(request):
     return render(request,'supershop/order-list.html',context)
 
 def orderCreate(request,product_id):
-    product = Product.objects.get(id=product_id)
+    try:
+        product = Product.objects.get(id=product_id)
+    except Product.DoesNotExist:
+        return HttpResponse('page not found 404')
     customer = request.user
     form = OrderForm(initial={'product':product,'customer':customer})
-
     if request.method == 'POST':
         form = OrderForm(request.POST)
         if form.is_valid():
@@ -43,7 +45,7 @@ def orderCreate(request,product_id):
 
 def orderUpdate(request,order_id):
     order = Order.objects.get(id=order_id)
-    form = OrderForm(instance=order)
+   # form = OrderForm(instance=order)
     if request.method == 'POST':
         form = OrderForm(request.POST,instance=order)
         if form.is_valid():
@@ -51,6 +53,24 @@ def orderUpdate(request,order_id):
             return redirect('orders')
     context = {'form':form}
     return render(request,'supershop/order-create.html',context)
+
+def orderDelete(request,order_id):
+    try:
+        order = Order.objects.get(id=order_id)
+    except Order.DoesNotExist:
+        return HttpResponse('order not found 404.')
+    form = OrderForm(instance=order)
+    if request.method == 'POST':
+        if order.status == 'Not Delivered':
+            order.delete()
+            return HttpResponse('Order deleted')
+        else:
+            return HttpResponse('Post not Valid')
+    context = {'order':order}
+    return render(request,'supershop/order-delete.html',context)
+
+
+
 
 
 
