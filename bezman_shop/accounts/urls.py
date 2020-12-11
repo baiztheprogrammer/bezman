@@ -3,12 +3,17 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path
 from .views import *
+from django.contrib.auth.views import *
 
 
 urlpatterns = [
+    path('reset-password/',PasswordResetView.as_view(),name='reset-password'),
+    path('reset-password-done/',PasswordResetDoneView.as_view(),name='password_reset_done'),
+    path('reset/<uidb64>/<token>/',PasswordResetConfirmView.as_view(),name='password_reset_confirm'),
+    path('reset-password-complete/',PasswordResetCompleteView.as_view(),name='password_reset_complete'),
     path('customers/',customerList,name='customer'),
     path('customers/<int:customer_id>/',getCustomer,name='customer'),
     path('register/',register,name='register'),
     path('login/',auth,name='login'),
-    path('logout/',logout_page,name='logout')
+    path('logout/',logout_page,name='logout'),
 ]
