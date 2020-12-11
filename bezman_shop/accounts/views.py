@@ -1,6 +1,7 @@
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import Group
+from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from .models import *
 from .admin_only import admin_only
@@ -13,7 +14,10 @@ def customerList(request):
     return render(request,'supershop/customer-list.html',context)
 
 def getCustomer(request,customer_id):
-    customer = Customer.objects.get(id=customer_id)
+    try:
+        customer = Customer.objects.get(id=customer_id)
+    except Customer.DoesNotExist:
+        return HttpResponse('page not found 404')
     orders = customer.order_set.all()
     context = {'customer':customer,'orders':orders}
     return render(request,'supershop/get-customer.html',context)
