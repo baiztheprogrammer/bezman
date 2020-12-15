@@ -1,9 +1,11 @@
 from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import Group
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from .models import *
+from .forms import UserProfile
 from .admin_only import admin_only
 
 # Create your views here.
@@ -51,3 +53,14 @@ def auth(request):
 def logout_page(request):
     logout(request)
     return redirect('login')
+
+
+@login_required(login_url=['login'])
+def userProfile(request):
+    user = request.user.customer
+    form = UserProfile(instance=user)
+    context = {'form':form}
+    if request.method == 'POST':
+        form = UserProfile(request.POST,request.FILES,instance=user)
+        form.save()
+    return render(request,'supershop/accounts.html',context)
